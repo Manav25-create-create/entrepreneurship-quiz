@@ -5,11 +5,11 @@ import difflib
 quiz_questions = [
     {"question": "Nenne vier Formen des Entrepreneurships.",
      "correct_answers": ["Existenzgründung", "Nebenerwerb", "Franchise", "Startup"]},
-    
+
     {"question": "Welche Motive treiben Menschen zum Unternehmertum an?",
      "correct_answers": ["Opportunity Entrepreneurship", "Necessity Entrepreneurship", 
                          "Ambitious Entrepreneurship", "Social Entrepreneurship"]},
-    
+
     {"question": "Nenne drei unternehmerische Kompetenzen und Fähigkeiten.",
      "correct_answers": ["Innovationsfähigkeit", "Risikobereitschaft", "Führungskompetenz"]},
 
@@ -41,6 +41,8 @@ if "score" not in st.session_state:
     st.session_state.score = 0
 if "user_input" not in st.session_state:
     st.session_state.user_input = ""
+if "message" not in st.session_state:
+    st.session_state.message = ""
 
 # Aktuelle Frage anzeigen
 if st.session_state.question_index < len(quiz_questions):
@@ -48,19 +50,27 @@ if st.session_state.question_index < len(quiz_questions):
     st.subheader(question_data["question"])
 
     # Antwortfeld (automatisch nach jeder Eingabe zurückgesetzt)
-    user_input = st.text_input("Antwort hier eingeben:", value=st.session_state.user_input, key="input")
+    user_input = st.text_input("Antwort hier eingeben:", value="", key="input")
 
     if st.button("Überprüfen"):
-        if is_correct_answer(user_input, question_data["correct_answers"]):
-            st.success("✅ Richtig!")
-            st.session_state.score += 1
-        else:
-            st.error(f"❌ Falsch! Richtige Antwort: {', '.join(question_data['correct_answers'])}")
+        if user_input.strip():  # Prüft, ob eine Eingabe vorhanden ist
+            if is_correct_answer(user_input, question_data["correct_answers"]):
+                st.session_state.message = "✅ Richtig!"
+                st.session_state.score += 1
+            else:
+                st.session_state.message = f"❌ Falsch! Richtige Antwort: {', '.join(question_data['correct_answers'])}"
 
-        # Alte Antwort zurücksetzen und zur nächsten Frage gehen
-        st.session_state.user_input = ""
-        st.session_state.question_index += 1
-        st.experimental_set_query_params(refresh=True)  # Verhindert Fehler durch experimental_rerun
+            # Zur nächsten Frage wechseln
+            st.session_state.question_index += 1
+        else:
+            st.session_state.message = ""  # Keine Fehlermeldung, wenn leer
+
+    # Nachricht anzeigen (Fehlermeldung oder Erfolg)
+    if st.session_state.message:
+        if "❌" in st.session_state.message:
+            st.error(st.session_state.message)
+        else:
+            st.success(st.session_state.message)
 
 else:
     # Quiz-Ende anzeigen
@@ -68,5 +78,6 @@ else:
     if st.button("Nochmal spielen"):
         st.session_state.question_index = 0
         st.session_state.score = 0
+        st.session_state.message = ""
         st.session_state.user_input = ""
-        st.experimental_set_query_params(refresh=True)  # Setzt das Quiz sauber zurück
+        st.query_params(refresh=True)  # Setzt das Quiz sauber zurück
