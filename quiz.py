@@ -3,126 +3,66 @@ import difflib
 
 # Quiz-Fragen und Antworten
 quiz_questions = [
-    {"question": "Nenne vier Formen des Entrepreneurships.", 
+    {"question": "Nenne vier Formen des Entrepreneurships.",
      "correct_answers": ["Existenzgründung", "Nebenerwerb", "Franchise", "Startup"]},
     
-    {"question": "Welche Motive treiben Menschen zum Unternehmertum an?", 
-     "correct_answers": ["Opportunity Entrepreneurship", "Necessity Entrepreneurship", "Ambitous Entrepreneurship", "Social Entrepreneurship"]},
+    {"question": "Welche Motive treiben Menschen zum Unternehmertum an?",
+     "correct_answers": ["Opportunity Entrepreneurship", "Necessity Entrepreneurship", 
+                         "Ambitious Entrepreneurship", "Social Entrepreneurship"]},
     
-    {"question": "Nenne drei unternehmerische Kompetenzen & Fähigkeiten.", 
+    {"question": "Nenne drei unternehmerische Kompetenzen und Fähigkeiten.",
      "correct_answers": ["Innovationsfähigkeit", "Risikobereitschaft", "Führungskompetenz"]},
 
-    {"question": "Was versteht man unter Market-Pull und Technology-Pull Innovation?", 
-     "correct_answers": ["Market-Pull: Nachfrage bestimmt Innovation", "Technology-Push: Technologie treibt Innovation"]},
-
-    {"question": "Nenne drei Innovationsarten mit Beispielen.", 
-     "correct_answers": ["Produktinnovation: iPhone", "Prozessinnovation: Automatisierung", "Soziale Innovation: Qualifikationserhöhungen"]},
-
-    {"question": "Welche drei Arten von Geschäftsideen gibt es?", 
-     "correct_answers": ["Disruptiv", "Kreativ-imitativ", "Rein Imitativ"]},
-
-    {"question": "Nenne drei Bestandteile einer Geschäftsidee.", 
-     "correct_answers": ["Bedürfnisidee", "Problemlösungsidee", "Kaufmännische Umsetzungsidee"]},
-
-    {"question": "Welche Methoden zur Ideenherkunft und -gewinnung gibt es?", 
-     "correct_answers": ["Beobachtung von Märkten", "Blue Oceans", "Verbesserungen"]},
-
-    {"question": "Nenne die fünf Schritte im Design Thinking Prozess.", 
-     "correct_answers": ["Einfühlen", "Definieren", "Ideenbildung", "Prototypen erstellen", "Testen"]},
-
-    {"question": "Was ist der Unterschied zwischen Open und Closed Innovation?", 
-     "correct_answers": ["Open Innovation: Wissen teilen", "Closed Innovation: Internes Wissen behalten"]},
-
-    {"question": "Nenne fünf Faktoren zur Bewertung einer Geschäftsidee.", 
-     "correct_answers": ["Marktpotenzial", "technisch-organisatorisch", "finanziell", "kommerziell", "nachhaltig"]},
-
-    {"question": "Was bedeutet TAM, SAM und SOM?", 
-     "correct_answers": ["TAM: Gesamtmarkt", "SAM: Zielmarkt", "SOM: erreichbarer Markt"]},
-
-    {"question": "Was ist ein USP?", 
-     "correct_answers": ["Unique Selling Proposition", "Einzigartiges Verkaufsargument"]},
-
-    {"question": "Was sind die Lean Startup Prinzipien?", 
-     "correct_answers": ["Build-Measure-Learn", "Schnelle Iteration", "Kundenfeedback nutzen"]},
-
-    {"question": "Was ist ein MVP? Nenne Vor- und Nachteile.", 
-     "correct_answers": ["MVP: Einfachste Produktversion", "Vorteil: Schnelles Kundenfeedback", "Nachteil: Unfertiges Produkt"]},
-
-    {"question": "Nenne drei Gründe für Business Planning.", 
-     "correct_answers": ["Unternehmensgründung", "Kapitalbeschaffung", "Strategische Planung"]},
-
-    {"question": "Was sind die Vorteile einer Teamgründung?", 
-     "correct_answers": ["Mehr Wissen", "Geteiltes Risiko", "Bessere Netzwerke", "Motivation"]},
-
-    {"question": "Nenne drei Elemente des Gründerökosystems.", 
-     "correct_answers": ["Standortfaktoren", "Kapitalzugang", "Netzwerkressourcen"]},
-
-    {"question": "Nenne drei Marketinginstrumente für Startups.", 
-     "correct_answers": ["Social Media", "Influencer-Marketing", "Guerilla-Marketing"]},
-
-    {"question": "Nenne vier Methoden zur Preisbestimmung.", 
-     "correct_answers": ["Kostenbasiert", "Wettbewerbsbasiert", "Nachfragebasiert", "Wertorientiert"]},
-
-    {"question": "Nenne vier Finanzierungsziele.", 
-     "correct_answers": ["Liquiditätssicherung", "Rentabilitätsmaximierung", "Sicherheitsstreben", "Unabhängigkeitsstreben"]},
-
-    {"question": "Nenne vier Finanzierungsmethoden.", 
-     "correct_answers": ["Venture Capital", "Bootstrapping", "Business Angels", "Crowdfunding"]},
-
-    {"question": "Nenne drei Pitching-Arten.", 
-     "correct_answers": ["Elevator Pitch", "Investoren-Pitch", "Value Proposition Statement"]},
-
-    {"question": "Welche Wachstumsstrategien gibt es?", 
-     "correct_answers": ["Interne Wachstumsstrategien: Produktinnovation", "Externe Wachstumsstrategien: Übernahmen"]},
-
-    {"question": "Welche Exit-Strategien gibt es?", 
-     "correct_answers": ["Verkauf", "Börsengang", "Übernahme"]},
-
-    {"question": "Nenne die vier Phasen eines Startups.", 
-     "correct_answers": ["Seed", "Startup", "Growth", "Expansion"]}
+    {"question": "Market-Pull und Technology-Pull Innovation erklären.",
+     "correct_answers": ["Market-Pull: Nachfrage bestimmt Innovation", 
+                         "Technology-Push: Technologie treibt Innovation"]},
 ]
 
-# Initialisierung des Quiz-Zustands
-if "current_question" not in st.session_state:
-    st.session_state.current_question = 0
-if "score" not in st.session_state:
-    st.session_state.score = 0
-if "answers" not in st.session_state:
-    st.session_state.answers = [""] * len(quiz_questions)
-
-# Anzeige der aktuellen Frage
-st.title("🎮 Entrepreneurship Quiz")
-
-question_data = quiz_questions[st.session_state.current_question]
-st.write(question_data["question"])
-
-# Eingabefeld für die Antwort
-user_answer = st.text_input("Deine Antwort:", value=st.session_state.answers[st.session_state.current_question])
-
-# Funktion zur Überprüfung der Ähnlichkeit
-def is_answer_correct(user_input, correct_answers):
+# Funktion zur Überprüfung der Antwort
+def is_correct_answer(user_answer, correct_answers):
+    user_words = set(user_answer.lower().split(", "))
+    
     for correct in correct_answers:
-        if difflib.SequenceMatcher(None, user_input.lower(), correct.lower()).ratio() > 0.7:
+        correct_words = set(correct.lower().split(", "))
+        
+        if len(user_words) == len(correct_words) and all(
+            difflib.get_close_matches(word, correct_words, cutoff=0.8) for word in user_words
+        ):
             return True
     return False
 
-# Weiter-Button
-if st.button("Weiter"):
-    # Antwort speichern
-    st.session_state.answers[st.session_state.current_question] = user_answer.strip()
+# Streamlit App
+st.title("🎮 Entrepreneurship Quiz")
 
-    # Überprüfen, ob die Antwort richtig ist
-    if is_answer_correct(user_answer, question_data["correct_answers"]):
-        st.session_state.score += 1
-        st.success("✅ Richtig!")
-    else:
-        st.error(f"❌ Falsch! Richtige Antwort: {', '.join(question_data['correct_answers'])}")
+# Initialisieren der Session-State Variablen
+if "question_index" not in st.session_state:
+    st.session_state.question_index = 0
+if "score" not in st.session_state:
+    st.session_state.score = 0
 
-    # Zur nächsten Frage wechseln
-    if st.session_state.current_question < len(quiz_questions) - 1:
-        st.session_state.current_question += 1
-    else:
-        st.session_state.current_question = 0  # Zurück zum Anfang des Quiz
+# Aktuelle Frage anzeigen
+if st.session_state.question_index < len(quiz_questions):
+    question_data = quiz_questions[st.session_state.question_index]
+    st.subheader(question_data["question"])
 
-# Endergebnis anzeigen
-st.write(f"🏆 Endergebnis: {st.session_state.score}/{len(quiz_questions)} richtig!")
+    # Antwortfeld (automatisch nach jeder Eingabe zurückgesetzt)
+    user_input = st.text_input("Antwort hier eingeben:", key=f"input_{st.session_state.question_index}")
+
+    if st.button("Überprüfen"):
+        if is_correct_answer(user_input, question_data["correct_answers"]):
+            st.success("✅ Richtig!")
+            st.session_state.score += 1
+        else:
+            st.error(f"❌ Falsch! Richtige Antwort: {', '.join(question_data['correct_answers'])}")
+
+        # Zur nächsten Frage wechseln
+        st.session_state.question_index += 1
+        st.experimental_rerun()
+
+else:
+    # Quiz-Ende anzeigen
+    st.subheader(f"🏆 Endergebnis: {st.session_state.score}/{len(quiz_questions)} richtig!")
+    if st.button("Nochmal spielen"):
+        st.session_state.question_index = 0
+        st.session_state.score = 0
+        st.experimental_rerun()
