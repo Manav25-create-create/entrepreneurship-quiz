@@ -15,19 +15,16 @@ quiz_questions = [
 
     {"question": "Market-Pull und Technology-Pull Innovation erklären.",
      "correct_answers": ["Market-Pull: Nachfrage bestimmt Innovation", 
-                         "Technology-Push: Technologie treibt Innovation"]},
+                         "Technology-Push: Technologie treibt Innovation"]}
 ]
 
-# Funktion zur Überprüfung der Antwort
+# Funktion zur Überprüfung der Antwort (Reihenfolge & ähnliche Antworten erlaubt)
 def is_correct_answer(user_answer, correct_answers):
-    user_words = set(user_answer.lower().replace(",", "").split())
-
-    for correct in correct_answers:
-        correct_words = set(correct.lower().replace(",", "").split())
-
-        if len(user_words) == len(correct_words) and all(
-            any(difflib.get_close_matches(word, correct_words, cutoff=0.8) for word in user_words)
-        ):
+    user_words = set(map(str.strip, user_answer.lower().split(",")))  # Liste in Set umwandeln & Leerzeichen entfernen
+    correct_sets = [set(map(str.lower, ans.split(","))) for ans in correct_answers]  # Korrekte Antworten in Sets umwandeln
+    
+    for correct_set in correct_sets:
+        if user_words == correct_set or all(any(difflib.get_close_matches(word, correct_set, cutoff=0.8) for word in user_words)):
             return True
     return False
 
@@ -39,8 +36,6 @@ if "question_index" not in st.session_state:
     st.session_state.question_index = 0
 if "score" not in st.session_state:
     st.session_state.score = 0
-if "user_input" not in st.session_state:
-    st.session_state.user_input = ""
 if "message" not in st.session_state:
     st.session_state.message = ""
 
@@ -49,8 +44,8 @@ if st.session_state.question_index < len(quiz_questions):
     question_data = quiz_questions[st.session_state.question_index]
     st.subheader(question_data["question"])
 
-    # Antwortfeld (automatisch nach jeder Eingabe zurückgesetzt)
-    user_input = st.text_input("Antwort hier eingeben:", value="", key="input")
+    # Antwortfeld (wird nach Eingabe zurückgesetzt)
+    user_input = st.text_input("Antwort hier eingeben:", key="input")
 
     if st.button("Überprüfen"):
         if user_input.strip():  # Prüft, ob eine Eingabe vorhanden ist
@@ -62,6 +57,7 @@ if st.session_state.question_index < len(quiz_questions):
 
             # Zur nächsten Frage wechseln
             st.session_state.question_index += 1
+            st.experimental_rerun()
         else:
             st.session_state.message = ""  # Keine Fehlermeldung, wenn leer
 
@@ -79,5 +75,4 @@ else:
         st.session_state.question_index = 0
         st.session_state.score = 0
         st.session_state.message = ""
-        st.session_state.user_input = ""
-        st.query_params(refresh=True)  # Setzt das Quiz sauber zurück
+        st.query_params(refresh=True)  # Setzt das Quiz zurück
