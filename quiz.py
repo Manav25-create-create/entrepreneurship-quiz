@@ -1,7 +1,7 @@
 import streamlit as st
 import difflib
 
-# Quiz-Fragen und Antworten
+# Liste der Fragen und Antworten
 quiz_questions = [
     {"question": "Nenne vier Formen des Entrepreneurships.",
      "correct_answers": ["Existenzgründung", "Nebenerwerb", "Franchise", "Startup"]},
@@ -13,25 +13,95 @@ quiz_questions = [
     {"question": "Nenne drei unternehmerische Kompetenzen und Fähigkeiten.",
      "correct_answers": ["Innovationsfähigkeit", "Risikobereitschaft", "Führungskompetenz"]},
 
-    {"question": "Market-Pull und Technology-Pull Innovation erklären.",
+    {"question": "Erkläre Market-Pull und Technology-Pull Innovation.",
      "correct_answers": ["Market-Pull: Nachfrage bestimmt Innovation", 
-                         "Technology-Push: Technologie treibt Innovation"]}
+                         "Technology-Push: Technologie treibt Innovation"]},
+
+    {"question": "Nenne 2-3 Innovationsarten mit Beispielen.",
+     "correct_answers": ["Produktinnovation", "Prozessinnovation", "Soziale Innovation"]},
+
+    {"question": "Nenne drei Arten von Geschäftsideen.",
+     "correct_answers": ["Disruptiv", "Kreativ-imitativ", "Rein Imitativ"]},
+
+    {"question": "Nenne drei Bestandteile einer Geschäftsidee.",
+     "correct_answers": ["Bedürfnisidee", "Problemlösungsidee", "Kaufmännische Umsetzungsidee"]},
+
+    {"question": "Wie kann eine Idee entstehen oder gewonnen werden?",
+     "correct_answers": ["Beobachtung von Märkten", "Blue Oceans", "Verbesserungen"]},
+
+    {"question": "Nenne die fünf Phasen des Design Thinking Prozesses.",
+     "correct_answers": ["Einfühlen", "Definieren", "Ideenbildung", "Prototypen erstellen", "Testen"]},
+
+    {"question": "Was ist der Unterschied zwischen Open und Closed Innovation?",
+     "correct_answers": ["Open Innovation: Wissen teilen", "Closed Innovation: Internes Wissen behalten"]},
+
+    {"question": "Nenne fünf Faktoren zur Bewertung einer Geschäftsidee.",
+     "correct_answers": ["Marktpotenzial", "technisch-organisatorisch", "finanziell", "kommerziell", "nachhaltig"]},
+
+    {"question": "Erkläre TAM, SAM, SOM.",
+     "correct_answers": ["TAM: Gesamtmarkt", "SAM: Zielmarkt", "SOM: Erreichbarer Markt"]},
+
+    {"question": "Was bedeutet USP und nenne ein Beispiel.",
+     "correct_answers": ["Unique Selling Proposition", "Beispiel: Erstes Smartphone"]},
+
+    {"question": "Was sind die Prinzipien des Lean Startup?",
+     "correct_answers": ["Build-Measure-Learn", "Schnelle Iteration", "Datengetriebene Entscheidungen"]},
+
+    {"question": "Erkläre das MVP-Konzept mit Vor- und Nachteilen.",
+     "correct_answers": ["MVP: Einfachste Version eines Produkts", 
+                         "Vorteile: Schnelle Markteinführung", "Nachteile: Kunden können enttäuscht sein"]},
+
+    {"question": "Nenne drei Gründe für Business Planning.",
+     "correct_answers": ["Unternehmensgründung", "Kapitalbeschaffung", "Strategische Planung"]},
+
+    {"question": "Nenne zwei Aspekte zur Qualitätsbewertung im Business Planning.",
+     "correct_answers": ["Marktanalyse", "Geschäftsmodellanalyse"]},
+
+    {"question": "Was sind Vorteile einer Teamgründung?",
+     "correct_answers": ["Mehr Wissen", "Geteiltes Risiko", "Bessere Netzwerke"]},
+
+    {"question": "Nenne drei Elemente eines Gründerökosystems.",
+     "correct_answers": ["Standortfaktoren", "Kapitalzugang", "Netzwerkressourcen"]},
+
+    {"question": "Welche Marketinginstrumente sind für Startups wichtig?",
+     "correct_answers": ["Social Media", "Influencer-Marketing", "Guerilla-Marketing"]},
+
+    {"question": "Nenne vier Methoden zur Preisbestimmung.",
+     "correct_answers": ["Kostenbasiert", "Wettbewerbsbasiert", "Nachfragebasiert", "Wertorientiert"]},
+
+    {"question": "Nenne vier Finanzierungsziele mit Beispielen.",
+     "correct_answers": ["Liquiditätssicherung", "Rentabilitätsmaximierung", "Sicherheitsstreben", "Unabhängigkeit"]},
+
+    {"question": "Nenne vier Finanzierungsmethoden.",
+     "correct_answers": ["Venture Capital", "Bootstrapping", "Business Angels", "Crowdfunding"]},
+
+    {"question": "Welche Arten von Pitching gibt es?",
+     "correct_answers": ["Elevator Pitch", "Investoren-Pitch", "Value Proposition Statement"]},
+
+    {"question": "Nenne eine interne und eine externe Wachstumsstrategie.",
+     "correct_answers": ["Produktinnovation", "Übernahmen"]},
+
+    {"question": "Erkläre den EXIT-Prozess.",
+     "correct_answers": ["Verkauf", "Börsengang", "Übernahme"]},
+
+    {"question": "Nenne die vier Phasen eines Startups.",
+     "correct_answers": ["Seed", "Startup", "Growth", "Expansion"]}
 ]
 
-# Funktion zur Überprüfung der Antwort (Reihenfolge & ähnliche Antworten erlaubt)
+# Funktion zur Überprüfung der Antwort (Akzeptiert ähnliche und unsortierte Eingaben)
 def is_correct_answer(user_answer, correct_answers):
-    user_words = set(map(str.strip, user_answer.lower().split(",")))  # Liste in Set umwandeln & Leerzeichen entfernen
-    correct_sets = [set(map(str.lower, ans.split(","))) for ans in correct_answers]  # Korrekte Antworten in Sets umwandeln
-    
-    for correct_set in correct_sets:
-        if user_words == correct_set or all(any(difflib.get_close_matches(word, correct_set, cutoff=0.8) for word in user_words)):
-            return True
-    return False
+    user_words = {word.strip().lower() for word in user_answer.split(",")}
+    correct_set = {word.lower() for word in correct_answers}
+
+    if user_words == correct_set:
+        return True
+
+    match_count = sum(any(difflib.get_close_matches(word, correct_set, cutoff=0.8)) for word in user_words)
+    return match_count == len(correct_set)
 
 # Streamlit App
 st.title("🎮 Entrepreneurship Quiz")
 
-# Initialisieren der Session-State Variablen
 if "question_index" not in st.session_state:
     st.session_state.question_index = 0
 if "score" not in st.session_state:
@@ -39,29 +109,25 @@ if "score" not in st.session_state:
 if "message" not in st.session_state:
     st.session_state.message = ""
 
-# Aktuelle Frage anzeigen
 if st.session_state.question_index < len(quiz_questions):
     question_data = quiz_questions[st.session_state.question_index]
     st.subheader(question_data["question"])
 
-    # Antwortfeld (wird nach Eingabe zurückgesetzt)
-    user_input = st.text_input("Antwort hier eingeben:", key="input")
+    user_input = st.text_input("Antwort hier eingeben:", key="input", value="")
 
     if st.button("Überprüfen"):
-        if user_input.strip():  # Prüft, ob eine Eingabe vorhanden ist
+        if user_input.strip():
             if is_correct_answer(user_input, question_data["correct_answers"]):
                 st.session_state.message = "✅ Richtig!"
                 st.session_state.score += 1
             else:
                 st.session_state.message = f"❌ Falsch! Richtige Antwort: {', '.join(question_data['correct_answers'])}"
 
-            # Zur nächsten Frage wechseln
             st.session_state.question_index += 1
-            st.experimental_rerun()
+            st.rerun()
         else:
-            st.session_state.message = ""  # Keine Fehlermeldung, wenn leer
+            st.session_state.message = ""
 
-    # Nachricht anzeigen (Fehlermeldung oder Erfolg)
     if st.session_state.message:
         if "❌" in st.session_state.message:
             st.error(st.session_state.message)
@@ -69,10 +135,9 @@ if st.session_state.question_index < len(quiz_questions):
             st.success(st.session_state.message)
 
 else:
-    # Quiz-Ende anzeigen
     st.subheader(f"🏆 Endergebnis: {st.session_state.score}/{len(quiz_questions)} richtig!")
     if st.button("Nochmal spielen"):
         st.session_state.question_index = 0
         st.session_state.score = 0
         st.session_state.message = ""
-        st.query_params(refresh=True)  # Setzt das Quiz zurück
+        st.rerun()
